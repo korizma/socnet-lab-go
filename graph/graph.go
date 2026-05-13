@@ -1,52 +1,9 @@
 package graph
 
-import "fmt"
-
-type Node struct {
-	id   int32
-	attr map[string]any
-}
-
-type Edge struct {
-	node1 Node
-	node2 Node
-	attr  map[string]any
-	id    string
-}
-
 type Graph struct {
 	adjList map[int32][]Node
 	nodes   []Node
 	edges   []Edge
-}
-
-func NewNode(id int32) Node {
-	return Node{id: id, attr: make(map[string]any)}
-}
-
-func (node Node) AddAttr(name string, value any) {
-	node.attr[name] = value
-}
-
-func (node Node) GetAttr(name string) any {
-	return node.attr[name]
-}
-
-func NewEdge(node1 Node, node2 Node) Edge {
-	edge_id := fmt.Sprintf("%d_%d", min(node1.id, node2.id), max(node1.id, node2.id))
-	return Edge{node1: node1, node2: node2, attr: make(map[string]any), id: edge_id}
-}
-
-func (edge Edge) AddAttr(name string, value any) {
-	edge.attr[name] = value
-}
-
-func (edge Edge) GetAttr(name string) any {
-	return edge.attr[name]
-}
-
-func (edge Edge) Copy() Edge {
-	return Edge{node1: edge.node1, node2: edge.node2, attr: CopyMap(edge.attr)}
 }
 
 func NewGraph() *Graph {

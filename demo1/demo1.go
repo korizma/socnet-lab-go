@@ -3,58 +3,23 @@ package demo1
 import (
 	"fmt"
 
-	"gonum.org/v1/gonum/graph"
-	"gonum.org/v1/gonum/graph/simple"
+	"github.com/korizma/socnet-lab-go/graph"
 )
 
-type Osoba struct {
-	id  int64
-	ime string
-	pol string
-}
+func create_simple_undirected_graph() *graph.Graph {
+	G := graph.NewGraph()
 
-func (o Osoba) ID() int64 {
-	return o.id
-}
+	ana := graph.NewNode(0, map[string]any{"ime": "ana", "pol": "Z"})
+	milovan := graph.NewNode(1, map[string]any{"ime": "milovan", "pol": "Z"})
+	pera := graph.NewNode(2, map[string]any{"ime": "pera", "pol": "Z"})
+	mika := graph.NewNode(3, map[string]any{"ime": "mika", "pol": "Z"})
+	stojan := graph.NewNode(4, map[string]any{"ime": "stojan", "pol": "Z"})
 
-type Veza struct {
-	ko   Osoba
-	koga Osoba
-	kako string
-}
-
-func (v Veza) From() graph.Node { return v.ko }
-
-func (v Veza) To() graph.Node { return v.koga }
-
-func (v Veza) ReversedEdge() graph.Edge { return Veza{ko: v.koga, koga: v.ko, kako: v.kako} }
-
-func create_simple_undirected_graph() *simple.UndirectedGraph {
-	G := simple.NewUndirectedGraph()
-
-	osobe := []Osoba{
-		{id: 0, ime: "Ana", pol: "Z"},
-		{id: 1, ime: "Milovan", pol: "M"},
-		{id: 2, ime: "Pera", pol: "M"},
-		{id: 3, ime: "Mika", pol: "M"},
-		{id: 4, ime: "Stojan", pol: "M"},
-	}
-
-	veze := []Veza{
-		{ko: osobe[0], koga: osobe[1], kako: "voli"},
-		{ko: osobe[0], koga: osobe[2], kako: "ne-voli"},
-		{ko: osobe[0], koga: osobe[4], kako: "voli"},
-		{ko: osobe[2], koga: osobe[3], kako: "ne-voli"},
-		{ko: osobe[1], koga: osobe[4], kako: "ne-voli"},
-	}
-
-	for _, osoba := range osobe {
-		G.AddNode(osoba)
-	}
-
-	for _, veza := range veze {
-		G.SetEdge(veza)
-	}
+	G.AddEdge(graph.NewEdge(ana, milovan, map[string]any{"kako": "voli"}))
+	G.AddEdge(graph.NewEdge(ana, pera, map[string]any{"kako": "ne-voli"}))
+	G.AddEdge(graph.NewEdge(ana, stojan, map[string]any{"kako": "voli"}))
+	G.AddEdge(graph.NewEdge(pera, mika, map[string]any{"kako": "ne-voli"}))
+	G.AddEdge(graph.NewEdge(milovan, stojan, map[string]any{"kako": "ne-voli"}))
 
 	return G
 }
@@ -62,45 +27,38 @@ func create_simple_undirected_graph() *simple.UndirectedGraph {
 func Demo1() {
 	G := create_simple_undirected_graph()
 
-	fmt.Println("Osobe:\n")
+	fmt.Println("Cvorovi:")
+	fmt.Println()
 
-	osobe := G.Nodes()
+	nodes := G.GetNodes()
 
-	for osobe.Next() {
-		osoba := osobe.Node().(Osoba)
-		fmt.Println(osoba.ime, osoba.pol)
+	for _, node := range nodes {
+		fmt.Println(node.GetAttr("ime"))
 	}
 
-	fmt.Println("\nVeze:\n")
+	fmt.Println()
+	fmt.Println("Veze:")
+	fmt.Println()
 
-	veze := G.Edges()
+	edges := G.GetEdges()
 
-	for veze.Next() {
-		veza := veze.Edge().(Veza)
-		fmt.Println(veza.ko.ime, veza.kako, veza.koga.ime)
+	for _, edge := range edges {
+		fmt.Println(edge.Node1().GetAttr("ime"), edge.GetAttr("kako"), edge.Node2().GetAttr("ime"))
 	}
 
-	fmt.Println("\nSusedstva:")
+	fmt.Println()
+	fmt.Println("Susedstva:")
+	fmt.Println()
 
-	osobe = G.Nodes()
+	for _, node := range nodes {
+		fmt.Println("Susedi", node.GetAttr("ime"))
 
-	for osobe.Next() {
-		osoba := osobe.Node().(Osoba)
+		neighbours := G.GetNeighbours(node)
 
-		print("\n")
-		fmt.Println("Susedi osobe", osoba.ime)
-		print("\n")
-		veze = G.Edges()
-
-		for veze.Next() {
-			veza := veze.Edge().(Veza)
-
-			if veza.ko == osoba {
-				fmt.Println(veza.koga.ime, veza.kako)
-			}
-			if veza.koga == osoba {
-				fmt.Println(veza.ko.ime, veza.kako)
-			}
+		for _, neighbour := range neighbours {
+			fmt.Println(neighbour.GetAttr("ime"))
 		}
+		fmt.Println()
 	}
+
 }
