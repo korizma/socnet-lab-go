@@ -1,5 +1,12 @@
 package graph
 
+import (
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
 type Graph struct {
 	adjList map[int32][]Node
 	nodes   []Node
@@ -82,4 +89,38 @@ func (graph *Graph) GetNodes() []Node {
 
 func (graph *Graph) GetEdges() []Edge {
 	return CopySlice(graph.edges)
+}
+
+// must be in root dir or full path
+func LoadGraph(filename string) *Graph {
+	G := NewGraph()
+
+	file, err := os.ReadFile(filename)
+	if err != nil {
+		fmt.Println("error:", err)
+		return NewGraph()
+	}
+
+	lines := strings.Split(string(file), "\n")
+
+	for _, line := range lines {
+		pair := strings.Split(line, " ")
+
+		if len(pair) != 2 {
+			continue
+		}
+
+		node1_id, err := strconv.ParseInt(pair[0], 10, 32)
+		if err != nil {
+			continue
+		}
+
+		node2_id, err := strconv.ParseInt(pair[1], 10, 32)
+		if err != nil {
+			continue
+		}
+
+		G.AddEdge(NewEdge(NewNode(int32(node1_id)), NewNode(int32(node2_id))))
+	}
+	return G
 }
