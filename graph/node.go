@@ -30,3 +30,7 @@ func (node Node) ToString() string {
 	}
 	return str_representation
 }
+
+func (node Node) GetDegree(graph Graph) int {
+	return len(graph.adjList[node.id])
+}

@@ -3,35 +3,18 @@ package demo3
 import (
 	"fmt"
 
-	"github.com/korizma/socnet-lab-go/demo2"
-	"gonum.org/v1/gonum/graph"
-	"gonum.org/v1/gonum/graph/simple"
+	"github.com/korizma/socnet-lab-go/graph"
 )
 
-func CalculateNodeDegree(node graph.Node, graph *simple.UndirectedGraph) int {
-	edges := graph.Edges()
-	degree := 0
-
-	for edges.Next() {
-		edge := edges.Edge()
-		if node.ID() == edge.From().ID() || node.ID() == edge.To().ID() {
-			degree += 1
-		}
-	}
-
-	return degree
-}
-
-func FormDegreeDistribution(graph *simple.UndirectedGraph) []float32 {
+func FormDegreeDistribution(graph *graph.Graph) []float32 {
 	degrees := []int{}
 	max_degree := 0
 
-	nodes := graph.Nodes()
+	nodes := graph.GetNodes()
 
-	for nodes.Next() {
-		node := nodes.Node()
+	for _, node := range nodes {
 
-		node_degree := CalculateNodeDegree(node, graph)
+		node_degree := graph.GetDegree(node)
 		degrees = append(degrees, node_degree)
 
 		max_degree = max(max_degree, node_degree)
@@ -44,18 +27,18 @@ func FormDegreeDistribution(graph *simple.UndirectedGraph) []float32 {
 	}
 
 	for i, _ := range degree_dist {
-		degree_dist[i] /= float32(graph.Nodes().Len())
+		degree_dist[i] /= float32(len(nodes))
 	}
 
 	return degree_dist
 }
 
 func Demo3() {
-	G := demo2.LoadZachary()
+	G := graph.LoadGraph("zachary.txt")
 
 	degree_dist := FormDegreeDistribution(G)
 
 	for degree, dist := range degree_dist {
-		fmt.Printf("%d: %.2f\n", degree, dist)
+		fmt.Printf("%d:\t%.2f\n", degree, dist*100)
 	}
 }

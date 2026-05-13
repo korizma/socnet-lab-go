@@ -124,3 +124,7 @@ func LoadGraph(filename string) *Graph {
 	}
 	return G
 }
+
+func (graph Graph) GetDegree(node Node) int {
+	return len(graph.adjList[node.id])
+}
