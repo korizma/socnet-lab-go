@@ -142,3 +142,42 @@ func LoadGraph(filename string) *Graph {
 func (graph Graph) GetDegree(node Node) int {
 	return len(graph.adjList[node.id])
 }
+
+// removes attributes from edges
+func (graph Graph) GetConnectedComponents() []*Graph {
+	components := make([]*Graph, 0)
+
+	visited := make(map[int32]bool)
+
+	for _, node := range graph.nodes {
+		visited[node.id] = false
+	}
+
+	for _, node := range graph.nodes {
+		if visited[node.id] {
+			continue
+		}
+
+		curr_graph := NewGraph()
+		curr_graph.AddNode(node)
+		stack := []Node{node}
+		visited[node.id] = true
+
+		for len(stack) != 0 {
+			curr_node := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+
+			for _, neighbour := range graph.adjList[curr_node.id] {
+				if !visited[neighbour.id] {
+					curr_graph.AddEdge(NewEdge(curr_node, neighbour))
+					stack = append(stack, neighbour)
+					visited[neighbour.id] = true
+				}
+			}
+		}
+
+		components = append(components, curr_graph)
+	}
+
+	return components
+}

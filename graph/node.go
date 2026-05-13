@@ -34,3 +34,7 @@ func (node Node) ToString() string {
 func (node Node) GetID() int32 {
 	return node.id
 }
+
+func (node Node) Copy() Node {
+	return Node{id: node.id, attr: CopyMap(node.attr)}
+}
