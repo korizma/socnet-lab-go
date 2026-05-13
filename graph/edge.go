@@ -27,11 +27,11 @@ func (edge Edge) GetAttr(name string) any {
 }
 
 func (edge Edge) Copy() Edge {
-	return Edge{node1: edge.node1, node2: edge.node2, attr: CopyMap(edge.attr)}
+	return Edge{node1: edge.node1, node2: edge.node2, attr: CopyMap(edge.attr), id: edge.id}
 }
 
 func (edge Edge) ToString() string {
-	str_representation := "NodeID: " + string(edge.id)
+	str_representation := "NodeID: " + fmt.Sprint(edge.id)
 	str_representation += "\nNode 1: " + edge.node1.ToString()
 	str_representation += "\nNode 2: " + edge.node2.ToString()
 	for key, val := range edge.attr {

@@ -3,52 +3,18 @@ package demo4
 import (
 	"fmt"
 
-	"github.com/korizma/socnet-lab-go/demo2"
-	"gonum.org/v1/gonum/graph"
-	"gonum.org/v1/gonum/graph/simple"
+	"github.com/korizma/socnet-lab-go/graph"
 )
 
-func CreateEgolessEgoGraph(node graph.Node, graph *simple.UndirectedGraph) *simple.UndirectedGraph {
-	ego_graph := simple.NewUndirectedGraph()
+func GetClusterCoef(node graph.Node, graph *graph.Graph) float32 {
+	ego_graph := graph.CreateEgoGraph(node)
 
-	edges := graph.Edges()
+	ego_graph.RemoveNode(node)
 
-	for edges.Next() {
-		edge := edges.Edge()
+	edge_num := float32(len(ego_graph.GetEdges()))
+	node_num := float32(len(ego_graph.GetNodes()))
 
-		if edge.From().ID() == node.ID() {
-			ego_graph.AddNode(edge.To())
-		}
-		if edge.To().ID() == node.ID() {
-			ego_graph.AddNode(edge.From())
-		}
-	}
-
-	edges.Reset()
-
-	for edges.Next() {
-		edge := edges.Edge()
-
-		node1 := ego_graph.Node(edge.From().ID())
-		if node1 == nil {
-			continue
-		}
-		node2 := ego_graph.Node(edge.To().ID())
-		if node2 == nil {
-			continue
-		}
-		ego_graph.SetEdge(edge)
-	}
-	return ego_graph
-}
-
-func GetClusterCoef(node graph.Node, graph *simple.UndirectedGraph) float32 {
-	ego_graph := CreateEgolessEgoGraph(node, graph)
-
-	edge_num := float32(ego_graph.Edges().Len())
-	node_num := float32(ego_graph.Nodes().Len())
-
-	if node_num == 1 {
+	if node_num == 1 || node_num == 0 {
 		return 0
 	}
 
@@ -56,14 +22,12 @@ func GetClusterCoef(node graph.Node, graph *simple.UndirectedGraph) float32 {
 }
 
 func Demo4() {
-	G := demo2.LoadZachary()
+	G := graph.LoadGraph("zachary.txt")
 
-	nodes := G.Nodes()
-	for nodes.Next() {
-		node := nodes.Node()
-
+	nodes := G.GetNodes()
+	for _, node := range nodes {
 		cluster_coef := GetClusterCoef(node, G)
 
-		fmt.Printf("Node: %d, ClusterCoef: %.4f\n", node.ID(), cluster_coef)
+		fmt.Printf("Node: %d, ClusterCoef: %.4f\n", node.GetID(), cluster_coef)
 	}
 }

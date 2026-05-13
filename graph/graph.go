@@ -46,6 +46,18 @@ func (graph *Graph) RemoveNode(node Node) {
 
 		graph.adjList[neighbour.id] = RemoveFromSlice(graph.adjList[neighbour.id], node, CompareNodes)
 	}
+
+	remove_edges := make([]Edge, 0)
+	for _, edge := range graph.edges {
+		if CompareNodes(node, edge.node1) || CompareNodes(node, edge.node2) {
+			remove_edges = append(remove_edges, edge)
+		}
+	}
+
+	for _, edge := range remove_edges {
+		graph.edges = RemoveFromSlice(graph.edges, edge, CompareEdges)
+	}
+
 	delete(graph.adjList, node.id)
 }
 
@@ -73,8 +85,10 @@ func (graph *Graph) CreateEgoGraph(ego Node) *Graph {
 		_, err1 := FindInSlice(nodes, edge.node1, CompareNodes)
 		_, err2 := FindInSlice(nodes, edge.node2, CompareNodes)
 
-		if err1 == nil && err2 == nil && !CompareNodes(ego, edge.node1) && !CompareNodes(ego, edge.node2) {
-			continue
+		if !(CompareNodes(ego, edge.node1) || CompareNodes(ego, edge.node2)) {
+			if err1 != nil || err2 != nil {
+				continue
+			}
 		}
 
 		ego_graph.AddEdge(edge.Copy())

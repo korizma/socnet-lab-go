@@ -24,13 +24,13 @@ func (node Node) GetAttr(name string) any {
 }
 
 func (node Node) ToString() string {
-	str_representation := "NodeID: " + string(node.id)
+	str_representation := "NodeID: " + fmt.Sprint(node.id)
 	for key, val := range node.attr {
 		str_representation += "\n" + key + ": " + fmt.Sprint(val)
 	}
 	return str_representation
 }
 
-func (node Node) GetDegree(graph Graph) int {
-	return len(graph.adjList[node.id])
+func (node Node) GetID() int32 {
+	return node.id
 }
