@@ -2,6 +2,7 @@ package graph
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
@@ -118,9 +119,9 @@ func LoadGraph(filename string) *Graph {
 	lines := strings.Split(string(file), "\n")
 
 	for _, line := range lines {
-		pair := strings.Split(line, " ")
+		pair := strings.Fields(line)
 
-		if len(pair) != 2 {
+		if len(pair) < 2 {
 			continue
 		}
 
@@ -180,4 +181,25 @@ func (graph Graph) GetConnectedComponents() []*Graph {
 	}
 
 	return components
+}
+
+// erdos_renyi_graph
+
+func GenerateErdosRenyiGraph(nodes int, p float64) *Graph {
+	graph := NewGraph()
+
+	for i := 0; i < nodes; i++ {
+		node_i := NewNode(int32(i))
+		graph.AddNode(node_i)
+		for j := i + 1; j < nodes; j++ {
+
+			if rand.Float64() < p {
+				node_j := NewNode(int32(j))
+				graph.AddEdge(NewEdge(node_i, node_j))
+			}
+
+		}
+	}
+
+	return graph
 }
