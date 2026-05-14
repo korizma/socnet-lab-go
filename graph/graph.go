@@ -313,3 +313,14 @@ func PrintPath(path []Edge) {
 
 	fmt.Println(strings.Join(parts, " -> "))
 }
+
+func (graph Graph) Copy() *Graph {
+	newGraph := NewGraph()
+	for _, node := range graph.GetNodes() {
+		newGraph.AddNode(node)
+	}
+	for _, edge := range graph.GetEdges() {
+		newGraph.AddEdge(edge)
+	}
+	return newGraph
+}
