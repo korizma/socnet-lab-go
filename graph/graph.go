@@ -9,79 +9,70 @@ import (
 )
 
 type Graph struct {
-	adjList map[int32][]Node
-	nodes   []Node
-	edges   []Edge
+	adj      map[int32]map[int32]Edge
+	idToNode map[int32]Node
 }
 
 func NewGraph() *Graph {
-	return &Graph{adjList: make(map[int32][]Node)}
+	return &Graph{adj: make(map[int32]map[int32]Edge), idToNode: make(map[int32]Node)}
 }
 
+// Adds node to the graph, if a node with the same ID exists it does nothing
 func (graph *Graph) AddNode(node Node) {
-	_, err := FindInSlice(graph.nodes, node, CompareNodes)
-	if err != nil {
-		graph.nodes = append(graph.nodes, node)
+	_, ok := graph.idToNode[node.id]
+	if !ok {
+		graph.idToNode[node.id] = node
+		graph.adj[node.id] = make(map[int32]Edge)
 	}
 }
 
 func (graph *Graph) AddEdge(edge Edge) {
-	_, err := FindInSlice(graph.edges, edge, CompareEdges)
-	if err == nil {
+	if edge.node1.id == edge.node2.id {
 		return
 	}
-
-	graph.AddNode(edge.node2)
+	_, ok := graph.adj[edge.node1.id][edge.node2.id]
+	if ok {
+		return
+	}
 	graph.AddNode(edge.node1)
+	graph.AddNode(edge.node2)
 
-	graph.edges = append(graph.edges, edge)
-
-	graph.adjList[edge.node2.id] = append(graph.adjList[edge.node2.id], edge.node1)
-	graph.adjList[edge.node1.id] = append(graph.adjList[edge.node1.id], edge.node2)
+	graph.adj[edge.node1.id][edge.node2.id] = edge
+	graph.adj[edge.node2.id][edge.node1.id] = edge
 }
 
 func (graph *Graph) RemoveNode(node Node) {
-	graph.nodes = RemoveFromSlice(graph.nodes, node, CompareNodes)
+	delete(graph.idToNode, node.id)
+	delete(graph.adj, node.id)
 
-	for _, neighbour := range graph.adjList[node.id] {
-
-		graph.adjList[neighbour.id] = RemoveFromSlice(graph.adjList[neighbour.id], node, CompareNodes)
+	for _, adj_layer2 := range graph.adj {
+		delete(adj_layer2, node.id)
 	}
-
-	remove_edges := make([]Edge, 0)
-	for _, edge := range graph.edges {
-		if CompareNodes(node, edge.node1) || CompareNodes(node, edge.node2) {
-			remove_edges = append(remove_edges, edge)
-		}
-	}
-
-	for _, edge := range remove_edges {
-		graph.edges = RemoveFromSlice(graph.edges, edge, CompareEdges)
-	}
-
-	delete(graph.adjList, node.id)
 }
 
 func (graph *Graph) RemoveEdge(edge Edge) {
-	graph.edges = RemoveFromSlice(graph.edges, edge, CompareEdges)
-
-	graph.adjList[edge.node1.id] = RemoveFromSlice(graph.adjList[edge.node1.id], edge.node2, CompareNodes)
-
-	graph.adjList[edge.node2.id] = RemoveFromSlice(graph.adjList[edge.node2.id], edge.node1, CompareNodes)
-
+	delete(graph.adj[edge.node1.id], edge.node2.id)
+	delete(graph.adj[edge.node2.id], edge.node1.id)
 }
 
 func (graph *Graph) GetNeighbours(node Node) []Node {
-	return CopySlice(graph.adjList[node.id])
+	node_ids := MapKeysToSlice(graph.adj[node.id])
+	neighbours := make([]Node, 0)
+
+	for _, id := range node_ids {
+		neighbours = append(neighbours, graph.idToNode[id])
+	}
+	return neighbours
 }
 
 func (graph *Graph) CreateEgoGraph(ego Node) *Graph {
 	ego_graph := NewGraph()
 	ego_graph.AddNode(ego)
 
-	nodes := graph.adjList[ego.id]
+	nodes := graph.GetNeighbours(ego)
+	all_edges := graph.GetEdges()
 
-	for _, edge := range graph.edges {
+	for _, edge := range all_edges {
 
 		_, err1 := FindInSlice(nodes, edge.node1, CompareNodes)
 		_, err2 := FindInSlice(nodes, edge.node2, CompareNodes)
@@ -99,11 +90,25 @@ func (graph *Graph) CreateEgoGraph(ego Node) *Graph {
 }
 
 func (graph *Graph) GetNodes() []Node {
-	return CopySlice(graph.nodes)
+	node_ids := MapKeysToSlice(graph.idToNode)
+	neighbours := make([]Node, 0)
+
+	for _, id := range node_ids {
+		neighbours = append(neighbours, graph.idToNode[id])
+	}
+	return neighbours
 }
 
 func (graph *Graph) GetEdges() []Edge {
-	return CopySlice(graph.edges)
+	edges := make([]Edge, 0)
+
+	for _, adj_layer2 := range graph.adj {
+		for _, edge := range adj_layer2 {
+			edges = append(edges, edge)
+		}
+	}
+
+	return edges
 }
 
 // must be in root dir or full path
@@ -141,7 +146,7 @@ func LoadGraph(filename string) *Graph {
 }
 
 func (graph Graph) GetDegree(node Node) int {
-	return len(graph.adjList[node.id])
+	return len(graph.adj[node.id])
 }
 
 // removes attributes from edges
@@ -150,11 +155,13 @@ func (graph Graph) GetConnectedComponents() []*Graph {
 
 	visited := make(map[int32]bool)
 
-	for _, node := range graph.nodes {
+	nodes := graph.GetNodes()
+
+	for _, node := range nodes {
 		visited[node.id] = false
 	}
 
-	for _, node := range graph.nodes {
+	for _, node := range nodes {
 		if visited[node.id] {
 			continue
 		}
@@ -168,11 +175,12 @@ func (graph Graph) GetConnectedComponents() []*Graph {
 			curr_node := stack[len(stack)-1]
 			stack = stack[:len(stack)-1]
 
-			for _, neighbour := range graph.adjList[curr_node.id] {
-				if !visited[neighbour.id] {
-					curr_graph.AddEdge(NewEdge(curr_node, neighbour))
-					stack = append(stack, neighbour)
-					visited[neighbour.id] = true
+			for neighbour := range graph.adj[curr_node.id] {
+				if !visited[neighbour] {
+					neighbour_node, _ := graph.GetNode(neighbour)
+					curr_graph.AddEdge(NewEdge(curr_node, neighbour_node))
+					stack = append(stack, neighbour_node)
+					visited[neighbour] = true
 				}
 			}
 		}
@@ -202,4 +210,14 @@ func GenerateErdosRenyiGraph(nodes int, p float64) *Graph {
 	}
 
 	return graph
+}
+
+func (graph *Graph) GetNode(id int32) (Node, bool) {
+	node, ok := graph.idToNode[id]
+	return node, ok
+}
+
+func (graph *Graph) GetEdge(node_id1 int32, node_id2 int32) (Edge, bool) {
+	node, ok := graph.adj[node_id1][node_id2]
+	return node, ok
 }

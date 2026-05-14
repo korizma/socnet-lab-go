@@ -29,8 +29,8 @@ func Demo5() {
 		fmt.Println("Graph", i, "ima", len(graph.GetNodes()), "cvorova")
 	}
 
-	nodes := 100
-	p := 0.02
+	nodes := 1000
+	p := 0.001
 	randomGraph := graph.GenerateErdosRenyiGraph(nodes, p)
 
 	comps = DetermineConnectedComponents(randomGraph)
