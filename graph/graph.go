@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -102,9 +103,11 @@ func (graph *Graph) GetNodes() []Node {
 func (graph *Graph) GetEdges() []Edge {
 	edges := make([]Edge, 0)
 
-	for _, adj_layer2 := range graph.adj {
-		for _, edge := range adj_layer2 {
-			edges = append(edges, edge)
+	for id1, adj_layer2 := range graph.adj {
+		for id2, edge := range adj_layer2 {
+			if id1 > id2 {
+				edges = append(edges, edge)
+			}
 		}
 	}
 
@@ -149,7 +152,6 @@ func (graph Graph) GetDegree(node Node) int {
 	return len(graph.adj[node.id])
 }
 
-// removes attributes from edges
 func (graph Graph) GetConnectedComponents() []*Graph {
 	components := make([]*Graph, 0)
 
@@ -176,9 +178,9 @@ func (graph Graph) GetConnectedComponents() []*Graph {
 			stack = stack[:len(stack)-1]
 
 			for neighbour := range graph.adj[curr_node.id] {
+				neighbour_node, _ := graph.GetNode(neighbour)
+				curr_graph.AddEdge(graph.adj[curr_node.id][neighbour])
 				if !visited[neighbour] {
-					neighbour_node, _ := graph.GetNode(neighbour)
-					curr_graph.AddEdge(NewEdge(curr_node, neighbour_node))
 					stack = append(stack, neighbour_node)
 					visited[neighbour] = true
 				}
@@ -220,4 +222,94 @@ func (graph *Graph) GetNode(id int32) (Node, bool) {
 func (graph *Graph) GetEdge(node_id1 int32, node_id2 int32) (Edge, bool) {
 	node, ok := graph.adj[node_id1][node_id2]
 	return node, ok
+}
+
+func (graph *Graph) GetShortestPath(node1 Node, node2 Node) []Edge {
+	before := make(map[int32]int32)
+
+	before[node1.id] = -1
+	queue := []Node{node1}
+
+	path_exists := false
+
+	for len(queue) > 0 {
+		curr_node := queue[0]
+		queue = queue[1:]
+
+		if curr_node.id == node2.id {
+			path_exists = true
+			break
+		}
+
+		neighbours := graph.GetNeighbours(curr_node)
+		for _, neighbour := range neighbours {
+			_, ok := before[neighbour.id]
+			if !ok {
+				before[neighbour.id] = curr_node.id
+				queue = append(queue, neighbour)
+			}
+		}
+	}
+	path := make([]Edge, 0)
+	if !path_exists {
+		return path
+	}
+	curr_id := node2.id
+	for {
+		next_id := before[curr_id]
+		if next_id == -1 {
+			break
+		}
+		edge, ok := graph.GetEdge(curr_id, next_id)
+		if !ok {
+			panic("Edge not found, it should have been found")
+		}
+		path = append(path, edge)
+		curr_id = next_id
+	}
+	return path
+}
+
+func PrintPath(path []Edge) {
+	if len(path) == 0 {
+		fmt.Println()
+		return
+	}
+
+	node_ids := make([]int32, 0, len(path)+1)
+
+	if len(path) == 1 {
+		node_ids = append(node_ids, path[0].node1.id, path[0].node2.id)
+	} else {
+		first_edge := path[0]
+		second_edge := path[1]
+
+		if first_edge.node1.id == second_edge.node1.id || first_edge.node1.id == second_edge.node2.id {
+			node_ids = append(node_ids, first_edge.node2.id, first_edge.node1.id)
+		} else {
+			node_ids = append(node_ids, first_edge.node1.id, first_edge.node2.id)
+		}
+
+		for i := 1; i < len(path); i++ {
+			prev_id := node_ids[len(node_ids)-1]
+			edge := path[i]
+
+			if edge.node1.id == prev_id {
+				node_ids = append(node_ids, edge.node2.id)
+			} else if edge.node2.id == prev_id {
+				node_ids = append(node_ids, edge.node1.id)
+			} else {
+				panic("Invalid path")
+			}
+		}
+
+		slices.Reverse(node_ids)
+	}
+
+	parts := make([]string, 0, len(node_ids))
+	for _, id := range node_ids {
+		parts = append(parts, fmt.Sprint(id))
+	}
+
+	fmt.Println(strings.Join(parts, " -> "))
 }
