@@ -48,5 +48,9 @@ func main() {
 		demo10.Demo10()
 	case "sol1":
 		solutions.Sol1()
+	case "sol2":
+		solutions.Sol2()
+	case "sol3":
+		solutions.Sol3()
 	}
 }
