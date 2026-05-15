@@ -14,6 +14,7 @@ import (
 	"github.com/korizma/socnet-lab-go/demo7"
 	"github.com/korizma/socnet-lab-go/demo8"
 	"github.com/korizma/socnet-lab-go/demo9"
+	"github.com/korizma/socnet-lab-go/solutions"
 )
 
 func main() {
@@ -45,5 +46,7 @@ func main() {
 		demo9.Demo9()
 	case "10":
 		demo10.Demo10()
+	case "sol1":
+		solutions.Sol1()
 	}
 }
