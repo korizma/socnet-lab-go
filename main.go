@@ -52,5 +52,7 @@ func main() {
 		solutions.Sol2()
 	case "sol3":
 		solutions.Sol3()
+	case "sol4":
+		solutions.Sol4()
 	}
 }
