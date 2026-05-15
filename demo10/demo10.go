@@ -21,9 +21,10 @@ func Demo10() {
 		fmt.Println("Error loading graph:", err)
 		return
 	}
-
+	fmt.Println("Jaccard Coefficient:")
 	printTop10(JaccardCoefficient(G))
 	fmt.Println()
 
+	fmt.Println("Adamic-Adar Index:")
 	printTop10(AdamicAdarIndex(G))
 }
