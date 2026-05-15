@@ -4,40 +4,41 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/korizma/socnet-lab-go/graph"
+	"github.com/korizma/socnet-lab-go/lab"
+	"gonum.org/v1/gonum/graph/topo"
 )
 
-func CompareGraphSize(g1 *graph.Graph, g2 *graph.Graph) int {
-	return len(g1.GetNodes()) - len(g2.GetNodes())
-}
-
-func DetermineConnectedComponents(graph *graph.Graph) []*graph.Graph {
-	comps := graph.GetConnectedComponents()
-
-	slices.SortFunc(comps, CompareGraphSize)
-
-	return comps
-}
-
 func Demo5() {
-	G := graph.LoadGraph("southern_women.txt")
-	comps := DetermineConnectedComponents(G)
-
-	fmt.Println("Broj komponenti:", len(comps))
-	fmt.Println()
-	for i, graph := range comps {
-		fmt.Println("Graph", i, "ima", len(graph.GetNodes()), "cvorova")
+	g, err := lab.LoadGraph("zachary.txt")
+	if err != nil {
+		fmt.Println("error:", err)
+		return
 	}
 
-	nodes := 1000
-	p := 0.001
-	randomGraph := graph.GenerateErdosRenyiGraph(nodes, p)
+	components := topo.ConnectedComponents(g)
 
-	comps = DetermineConnectedComponents(randomGraph)
+	slices.SortFunc(components, cmp)
 
-	fmt.Println("Broj komponenti:", len(comps))
+	fmt.Println("Connected components:", len(components))
+	for i, comp := range components {
+		fmt.Printf("Component %d: %d nodes\n", i, len(comp))
+	}
+
 	fmt.Println()
-	for i, graph := range comps {
-		fmt.Println("Graph", i, "ima", len(graph.GetNodes()), "cvorova")
+
+	n := int64(1000)
+	p := 0.003
+	randG := GenerateErdosRenyiGraph(n, p)
+
+	fmt.Printf("Random G(n,p) graph: n=%d, p=%.2f\n", n, p)
+	fmt.Println("Nodes:", randG.Nodes().Len())
+	fmt.Println("Edges:", randG.Edges().Len())
+
+	randComponents := topo.ConnectedComponents(randG)
+	slices.SortFunc(randComponents, cmp)
+
+	fmt.Println("Connected components in random graph:", len(randComponents))
+	for i, comp := range randComponents {
+		fmt.Printf("Component %d: %d nodes\n", i, len(comp))
 	}
 }

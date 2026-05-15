@@ -3,31 +3,49 @@ package demo4
 import (
 	"fmt"
 
-	"github.com/korizma/socnet-lab-go/graph"
+	"github.com/korizma/socnet-lab-go/lab"
+	"gonum.org/v1/gonum/graph"
 )
 
-func GetClusterCoef(node graph.Node, graph *graph.Graph) float32 {
-	ego_graph := graph.CreateEgoGraph(node)
+func ClusteringCoefficient(g graph.Undirected, nodeID int64) float64 {
+	neighbors_map := make(map[int64]bool)
 
-	ego_graph.RemoveNode(node)
-
-	edge_num := float32(len(ego_graph.GetEdges()))
-	node_num := float32(len(ego_graph.GetNodes()))
-
-	if node_num == 1 || node_num == 0 {
-		return 0
+	neighbors := graph.NodesOf(g.From(nodeID))
+	for _, neighbor := range neighbors {
+		neighbors_map[neighbor.ID()] = true
 	}
 
-	return edge_num / (node_num * (node_num - 1) / 2)
+	edges_between_neighbors := 0
+
+	for _, neighbor := range neighbors {
+		neighbor_neighbors := graph.NodesOf(g.From(neighbor.ID()))
+		for _, neighbor_neighbor := range neighbor_neighbors {
+			if neighbors_map[neighbor_neighbor.ID()] {
+				edges_between_neighbors++
+			}
+		}
+	}
+
+	n := len(neighbors)
+	if n < 2 {
+		return 0.0
+	}
+
+	return float64(edges_between_neighbors) / float64(n*(n-1))
 }
 
 func Demo4() {
-	G := graph.LoadGraph("zachary.txt")
+	// Clustering coefficient (stub)
+	g, err := lab.LoadGraph("zachary.txt")
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
 
-	nodes := G.GetNodes()
-	for _, node := range nodes {
-		cluster_coef := GetClusterCoef(node, G)
-
-		fmt.Printf("Node: %d, ClusterCoef: %.4f\n", node.GetID(), cluster_coef)
+	nodes := g.Nodes()
+	for nodes.Next() {
+		node := nodes.Node()
+		cc := ClusteringCoefficient(g, node.ID())
+		fmt.Printf("Node %d: Clustering Coefficient = %.4f\n", node.ID(), cc)
 	}
 }

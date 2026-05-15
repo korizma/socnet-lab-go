@@ -3,42 +3,37 @@ package demo3
 import (
 	"fmt"
 
-	"github.com/korizma/socnet-lab-go/graph"
+	"github.com/korizma/socnet-lab-go/lab"
+	"gonum.org/v1/gonum/graph"
 )
 
-func FormDegreeDistribution(graph *graph.Graph) []float32 {
-	degrees := []int{}
-	max_degree := 0
+func DegreeDistribution(g graph.Undirected) map[int]int {
+	degree_dist := make(map[int]int)
 
-	nodes := graph.GetNodes()
-
-	for _, node := range nodes {
-
-		node_degree := graph.GetDegree(node)
-		degrees = append(degrees, node_degree)
-
-		max_degree = max(max_degree, node_degree)
-	}
-
-	degree_dist := make([]float32, max_degree+1)
-
-	for _, degree := range degrees {
-		degree_dist[degree] += 1
-	}
-
-	for i, _ := range degree_dist {
-		degree_dist[i] /= float32(len(nodes))
+	nodes := g.Nodes()
+	for nodes.Next() {
+		node := nodes.Node()
+		degree := g.From(node.ID()).Len()
+		degree_dist[degree]++
 	}
 
 	return degree_dist
 }
 
 func Demo3() {
-	G := graph.LoadGraph("zachary.txt")
+	g, err := lab.LoadGraph("zachary.txt")
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
 
-	degree_dist := FormDegreeDistribution(G)
+	dist := DegreeDistribution(g)
+	if len(dist) == 0 {
+		fmt.Println("degree distribution not yet implemented")
+		return
+	}
 
-	for degree, dist := range degree_dist {
-		fmt.Printf("%d:\t%.2f\n", degree, dist*100)
+	for degree, count := range dist {
+		fmt.Printf("Degree %d: %d nodes\n", degree, count)
 	}
 }

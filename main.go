@@ -12,6 +12,7 @@ import (
 	"github.com/korizma/socnet-lab-go/demo6"
 	"github.com/korizma/socnet-lab-go/demo7"
 	"github.com/korizma/socnet-lab-go/demo8"
+	"github.com/korizma/socnet-lab-go/demo9"
 )
 
 func main() {
@@ -39,5 +40,7 @@ func main() {
 		demo7.Demo7()
 	case "8":
 		demo8.Demo8()
+	case "9":
+		demo9.Demo9()
 	}
 }

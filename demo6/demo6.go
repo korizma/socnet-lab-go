@@ -3,65 +3,64 @@ package demo6
 import (
 	"fmt"
 
-	"github.com/korizma/socnet-lab-go/graph"
+	"github.com/korizma/socnet-lab-go/demo5"
+	"github.com/korizma/socnet-lab-go/lab"
+	"gonum.org/v1/gonum/graph"
+	"gonum.org/v1/gonum/graph/path"
 )
 
-func dist(G *graph.Graph, node1 graph.Node, node2 graph.Node, print_path bool) int {
-	path := G.GetShortestPath(node1, node2)
-	if print_path {
-		graph.PrintPath(path)
-	}
-	return len(path)
+func dist(shortest path.AllShortest, node1 graph.Node, node2 graph.Node) int {
+	_, dist, _ := shortest.Between(node1.ID(), node2.ID())
+	return int(dist)
 }
 
-func avgMaxDist(G *graph.Graph) (float64, int) {
-	nodes := G.GetNodes()
+func avgMaxDist(G graph.Graph) (float64, int64) {
+	shortest := path.DijkstraAllPaths(G)
 
-	connected_nodes := 0
-	max_path_len := 0
-	path_len_sum := 0
+	sum := 0
+	diameter := 0
+
+	nodes := graph.NodesOf(G.Nodes())
 
 	for i := 0; i < len(nodes); i++ {
-		for j := i + 1; j < len(nodes); j++ {
-			path_len := dist(G, nodes[i], nodes[j], false)
-			if path_len > 0 {
-				connected_nodes += 1
-			}
-			max_path_len = max(max_path_len, path_len)
-			path_len_sum += path_len
+		for j := i; j < len(nodes); j++ {
+			d := dist(shortest, nodes[i], nodes[j])
+
+			diameter = max(diameter, d)
+
+			sum += d
 		}
 	}
 
-	if connected_nodes == 0 {
+	if len(nodes) < 3 {
 		return 0, 0
 	}
 
-	return float64(path_len_sum) / float64(connected_nodes), max_path_len
+	return float64(sum) / float64(len(nodes)*(len(nodes)-1)/2), int64(diameter)
 }
 
 func Demo6() {
-	G := graph.LoadGraph("zachary.txt")
+	g, err := lab.LoadGraph("zachary.txt")
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
 
-	nodes := G.GetNodes()
-	fmt.Println("Zachary: ")
-	fmt.Println("The path between the first node and the last node is:")
-	dist(G, nodes[len(nodes)-1], nodes[0], true)
+	fmt.Println("Zachary's karate club graph")
+	avgDist, diameter := avgMaxDist(g)
+
+	fmt.Printf("Number of nodes:%d\n", g.Nodes().Len())
+	fmt.Printf("Average distance: %.2f\n", avgDist)
+	fmt.Printf("Diameter: %d\n", diameter)
+
 	fmt.Println()
 
-	avgDist, maxDist := avgMaxDist(G)
-	fmt.Println("Broj Cvorova:", len(nodes))
-	fmt.Println("Prosecna udaljenost:", avgDist)
-	fmt.Println("Dijametar:", maxDist)
+	g = demo5.GenerateErdosRenyiGraph(100, 0.01)
 
-	G = graph.GenerateErdosRenyiGraph(100, 0.2)
+	fmt.Println("Erdos-Renyi graph with 100 nodes and p=0.0")
+	avgDist, diameter = avgMaxDist(g)
 
-	nodes = G.GetNodes()
-	fmt.Println()
-	fmt.Println("Random graph: ")
-	fmt.Println()
-
-	avgDist, maxDist = avgMaxDist(G)
-	fmt.Println("Broj Cvorova:", len(nodes))
-	fmt.Println("Prosecna udaljenost:", avgDist)
-	fmt.Println("Dijametar:", maxDist)
+	fmt.Printf("Number of nodes:%d\n", g.Nodes().Len())
+	fmt.Printf("Average distance: %.2f\n", avgDist)
+	fmt.Printf("Diameter: %d\n", diameter)
 }

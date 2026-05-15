@@ -1,4 +1,4 @@
-package demo8
+package demo10
 
 import (
 	"fmt"
@@ -6,7 +6,13 @@ import (
 	"github.com/korizma/socnet-lab-go/demo2"
 )
 
-func Demo8() {
+type LinkPredictionScore struct {
+	FromID int64
+	ToID   int64
+	Score  float64
+}
+
+func Demo10() {
 	G, err := demo2.LoadZachary()
 	// G, err := demo2.LoadFlorentine()
 	// G, err := demo2.LoadMiserables()
@@ -16,9 +22,8 @@ func Demo8() {
 		return
 	}
 
-	shell_index := ShellIndex(*G, true)
+	printTop10(JaccardCoefficient(G))
+	fmt.Println()
 
-	for id, index := range shell_index {
-		fmt.Printf("Node %d: Shell Index %d\n", id, index)
-	}
+	printTop10(AdamicAdarIndex(G))
 }
