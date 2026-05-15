@@ -4,14 +4,17 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/korizma/socnet-lab-go/lab"
+	"github.com/korizma/socnet-lab-go/demo2"
 	"gonum.org/v1/gonum/graph/topo"
 )
 
 func Demo5() {
-	g, err := lab.LoadGraph("zachary.txt")
+	g, err := demo2.LoadZachary()
+	// g, err := demo2.LoadFlorentine()
+	// g, err := demo2.LoadMiserables()
+	// g, err := demo2.LoadMiserables()
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println("Error loading graph:", err)
 		return
 	}
 

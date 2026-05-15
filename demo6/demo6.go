@@ -3,8 +3,8 @@ package demo6
 import (
 	"fmt"
 
+	"github.com/korizma/socnet-lab-go/demo2"
 	"github.com/korizma/socnet-lab-go/demo5"
-	"github.com/korizma/socnet-lab-go/lab"
 	"gonum.org/v1/gonum/graph"
 	"gonum.org/v1/gonum/graph/path"
 )
@@ -40,9 +40,12 @@ func avgMaxDist(G graph.Graph) (float64, int64) {
 }
 
 func Demo6() {
-	g, err := lab.LoadGraph("zachary.txt")
+	g, err := demo2.LoadZachary()
+	// g, err := demo2.LoadFlorentine()
+	// g, err := demo2.LoadMiserables()
+	// g, err := demo2.LoadMiserables()
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println("Error loading graph:", err)
 		return
 	}
 
