@@ -45,6 +45,9 @@ func JaccardCoefficient(g graph.Graph) []LinkPredictionScore {
 
 	for i := 0; i < len(nodes); i++ {
 		for j := i + 1; j < len(nodes); j++ {
+			if g.HasEdgeBetween(nodes[i].ID(), nodes[j].ID()) {
+				continue
+			}
 			score := calculateJaccardCoefficient(g, nodes[i], nodes[j])
 			scores = append(scores, score)
 		}
@@ -85,6 +88,10 @@ func AdamicAdarIndex(g graph.Graph) []LinkPredictionScore {
 
 	for i := 0; i < len(nodes); i++ {
 		for j := i + 1; j < len(nodes); j++ {
+			if g.HasEdgeBetween(nodes[i].ID(), nodes[j].ID()) {
+				continue
+			}
+
 			score := calculateAdamicAdarIndex(g, nodes[i], nodes[j])
 			scores = append(scores, score)
 		}

@@ -9,10 +9,10 @@ import (
 )
 
 func Demo5() {
-	g, err := demo2.LoadZachary()
+	// g, err := demo2.LoadZachary()
 	// g, err := demo2.LoadFlorentine()
-	// g, err := demo2.LoadMiserables()
-	// g, err := demo2.LoadMiserables()
+	// g, err := demo2.LoadWomen()
+	g, err := demo2.LoadMiserables()
 	if err != nil {
 		fmt.Println("Error loading graph:", err)
 		return
@@ -33,7 +33,7 @@ func Demo5() {
 	p := 0.003
 	randG := GenerateErdosRenyiGraph(n, p)
 
-	fmt.Printf("Random G(n,p) graph: n=%d, p=%.2f\n", n, p)
+	fmt.Printf("Erdos-Renyi graph: n=%d, p=%f\n", n, p)
 	fmt.Println("Nodes:", randG.Nodes().Len())
 	fmt.Println("Edges:", randG.Edges().Len())
 

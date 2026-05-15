@@ -7,12 +7,12 @@ import (
 	"gonum.org/v1/gonum/graph/community"
 )
 
-func updateLabel(g graph.Graph, node_id int64, labels map[int64]int64) int64 {
+func updateLabel(g graph.Graph, node_id int64, labels map[int64]int64, neighbours map[int64][]graph.Node) (int64, bool) {
 	seen := make(map[int64]int)
 
-	neighbours := graph.NodesOf(g.From(node_id))
+	ns := neighbours[node_id]
 
-	for _, neighbour := range neighbours {
+	for _, neighbour := range ns {
 		seen[labels[neighbour.ID()]]++
 	}
 
@@ -28,10 +28,16 @@ func updateLabel(g graph.Graph, node_id int64, labels map[int64]int64) int64 {
 		}
 	}
 
-	if max_id != -1 {
-		return max_id
+	change := true
+	if labels[node_id] == max_id {
+		change = false
 	}
-	return labels[node_id]
+
+	if max_id != -1 {
+		return max_id, change
+	}
+
+	return labels[node_id], change
 }
 
 func LabelPropagation(g graph.Graph) [][]graph.Node {
@@ -43,15 +49,27 @@ func LabelPropagation(g graph.Graph) [][]graph.Node {
 	}
 
 	change := true
+	max_iterations := 100
+	iteration := 0
+
+	// optimization things
+	neighbours := make(map[int64][]graph.Node)
+
+	for _, node := range nodes {
+		neighbours[node.ID()] = graph.NodesOf(g.From(node.ID()))
+	}
 
 	for change {
+		iteration++
+		if iteration > max_iterations {
+			break
+		}
 		change = false
 		for _, node := range nodes {
-			new_label := updateLabel(g, node.ID(), labels)
+			new_label, changed := updateLabel(g, node.ID(), labels, neighbours)
 
-			if new_label != labels[node.ID()] {
-				change = true
-			}
+			change = change || changed
+
 			new_labels[node.ID()] = new_label
 
 		}

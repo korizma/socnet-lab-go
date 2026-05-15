@@ -25,14 +25,34 @@ func LoadFlorentine() (*simple.UndirectedGraph, error) {
 
 func Demo2() {
 	g, err := LoadZachary()
-	// g, err := LoadMiserables()
-	// g, err := LoadWomen()
-	// g, err := LoadFlorentine()
 	if err != nil {
 		fmt.Println("error:", err)
 		return
 	}
 
-	fmt.Println("Nodes:", g.Nodes().Len())
-	fmt.Println("Edges:", g.Edges().Len())
+	fmt.Printf("Nodes: %d, Edges: %d\n", g.Nodes().Len(), g.Edges().Len())
+
+	g, err = LoadFlorentine()
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+
+	fmt.Printf("Nodes: %d, Edges: %d\n", g.Nodes().Len(), g.Edges().Len())
+
+	g, err = LoadMiserables()
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+
+	fmt.Printf("Nodes: %d, Edges: %d\n", g.Nodes().Len(), g.Edges().Len())
+
+	g, err = LoadWomen()
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+
+	fmt.Printf("Nodes: %d, Edges: %d\n", g.Nodes().Len(), g.Edges().Len())
 }

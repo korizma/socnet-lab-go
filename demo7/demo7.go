@@ -9,10 +9,10 @@ import (
 )
 
 func Demo7() {
-	g, err := demo2.LoadZachary()
+	// g, err := demo2.LoadZachary()
 	// g, err := demo2.LoadFlorentine()
-	// g, err := demo2.LoadMiserables()
-	// g, err := demo2.LoadMiserables()
+	// g, err := demo2.LoadWomen()
+	g, err := demo2.LoadMiserables()
 	if err != nil {
 		fmt.Println("Error loading graph:", err)
 		return

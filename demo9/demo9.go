@@ -37,10 +37,10 @@ func examinePartition(g graph.Undirected, partition [][]graph.Node) {
 }
 
 func Demo9() {
-	G, err := demo2.LoadZachary()
+	// G, err := demo2.LoadZachary()
 	// G, err := demo2.LoadFlorentine()
-	// G, err := demo2.LoadMiserables()
-	// G, err := demo2.LoadMiserables()
+	// G, err := demo2.LoadWomen()
+	G, err := demo2.LoadMiserables()
 	if err != nil {
 		fmt.Println("Error loading graph:", err)
 		return

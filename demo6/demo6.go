@@ -40,10 +40,10 @@ func avgMaxDist(G graph.Graph) (float64, int64) {
 }
 
 func Demo6() {
-	g, err := demo2.LoadZachary()
+	// g, err := demo2.LoadZachary()
 	// g, err := demo2.LoadFlorentine()
-	// g, err := demo2.LoadMiserables()
-	// g, err := demo2.LoadMiserables()
+	// g, err := demo2.LoadWomen()
+	g, err := demo2.LoadMiserables()
 	if err != nil {
 		fmt.Println("Error loading graph:", err)
 		return
@@ -60,10 +60,10 @@ func Demo6() {
 
 	g = demo5.GenerateErdosRenyiGraph(100, 0.01)
 
-	fmt.Println("Erdos-Renyi graph with 100 nodes and p=0.0")
+	fmt.Println("Erdos-Renyi graph with 100 nodes and p=0.01")
 	avgDist, diameter = avgMaxDist(g)
 
 	fmt.Printf("Number of nodes:%d\n", g.Nodes().Len())
-	fmt.Printf("Average distance: %.2f\n", avgDist)
+	fmt.Printf("Average distance: %f\n", avgDist)
 	fmt.Printf("Diameter: %d\n", diameter)
 }

@@ -35,10 +35,10 @@ func ClusteringCoefficient(g graph.Undirected, nodeID int64) float64 {
 }
 
 func Demo4() {
-	g, err := demo2.LoadZachary()
+	// g, err := demo2.LoadZachary()
 	// g, err := demo2.LoadFlorentine()
-	// g, err := demo2.LoadMiserables()
-	// g, err := demo2.LoadMiserables()
+	// g, err := demo2.LoadWomen()
+	g, err := demo2.LoadMiserables()
 	if err != nil {
 		fmt.Println("Error loading graph:", err)
 		return
