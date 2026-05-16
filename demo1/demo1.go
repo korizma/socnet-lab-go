@@ -39,7 +39,8 @@ func create_simple_undirected_graph() *simple.UndirectedGraph {
 func Demo1() {
 	G := create_simple_undirected_graph()
 
-	fmt.Println("Osobe:\n")
+	fmt.Println("Osobe:")
+	fmt.Println()
 
 	osobe := G.Nodes()
 
@@ -48,7 +49,8 @@ func Demo1() {
 		fmt.Println(osoba.ime, osoba.pol)
 	}
 
-	fmt.Println("\nVeze:\n")
+	fmt.Println("Veze:")
+	fmt.Println()
 
 	veze := G.Edges()
 

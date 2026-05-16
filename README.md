@@ -43,10 +43,32 @@ Erdos-Renyi graph generation is a technique to generate a random graph. You are 
 
 ## Demo 6
 
+This demo shows the shortest distance between every node in the graph. Also shows the average shortedst distance between every node, and the diameter of the graph.
+
+It uses the function `path.DijkstraAllPaths` that returns the object `path.AllShortest`. You can call the method `Between` on that object so you get the information about the shortest path about that path.
+
 ## Demo 7
+
+This demo prints out the top 10 nodes for Betweeness Centrality, Closeness Centrality and Eigenvector centrality.
+
+Betweeness centrality is how many times the node appears on the shortest paths.
+Closeness centrality represents how close the node is to the rest of the network.
+Eigenvector centrality represents how important a node is in a network.
 
 ## Demo 8
 
+This demo prints out the shell index for every node in the graph. It also prints out the sizes of the k-core subgraphs.
+
+A k-core graph is a graph where all of the nodes have degree of at least k.
+Shell index of a node is k, where k is the highest k-core subgraph the node is in.
+
 ## Demo 9
 
+This demo shows algorithms for community detection. You can see Label Propagation, Greedy Modularity Optimization and the Louvain method.
+
+Label propagation is an iterative method. In the start each node has its label, and after every iteration it gets the label that is most popular among his neigbours. This process is done until the labels stop changing.
+Greedy Modularity Optimization is also an iterative method. Modularity is the score for how good a certain choice of communities is. Every node starts as their own community, and each iteration two communities are joined if their joining is the best for the modularity. This process is done untill no improvements can be done.
+Louvain algorithm has 2 phases. The first phase is similar to GMO, but instead of merging communities it moves nodes between communities. The second phase makes a new graph where each community is a node and the edges between them represent the edges between communities. On that graph the first phase is then done.
+
 ## Demo 10
+
