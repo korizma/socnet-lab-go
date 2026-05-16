@@ -44,9 +44,8 @@ func Demo4() {
 		return
 	}
 
-	nodes := g.Nodes()
-	for nodes.Next() {
-		node := nodes.Node()
+	nodes := graph.NodesOf(g.Nodes())
+	for _, node := range nodes {
 		cc := ClusteringCoefficient(g, node.ID())
 		fmt.Printf("Node %d: Clustering Coefficient = %.4f\n", node.ID(), cc)
 	}

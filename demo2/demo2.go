@@ -30,6 +30,8 @@ func Demo2() {
 		return
 	}
 
+	fmt.Printf("Velicine grafova:\n")
+
 	fmt.Printf("Nodes: %d, Edges: %d\n", g.Nodes().Len(), g.Edges().Len())
 
 	g, err = LoadFlorentine()

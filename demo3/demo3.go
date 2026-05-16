@@ -37,6 +37,8 @@ func Demo3() {
 
 	dist, maxDegree := DegreeDistribution(g)
 
+	fmt.Printf("Distribucija stepeni cvorova:\n")
+
 	for i := 0; i <= maxDegree; i++ {
 		_, ok := dist[i]
 		if ok {
