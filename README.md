@@ -1,74 +1,78 @@
 # Social Network Lab in Go
 
-There are 10 demos in total and 6 problems you will need to solve.
+There are 10 demos in total, and 6 problems you will need to solve.
 
 # Content of the Demos
 
 ## Demo 1
 
-This demo shows how you can create a Undirected Graph with the `gonum` library. In the `helper.go` file for this demo you can see how `Osoba` and `Veza` was declared. They satisfy the interfaces for the `graph.Node` and `graph.Edge`, and they can be used as nodes and edges in the `gonum` library.
+This demo shows how you can create an undirected graph with the `gonum` library. In the `helper.go` file for this demo you can see how `Osoba` and `Veza` were declared. They satisfy the interfaces for `graph.Node` and `graph.Edge` and can be used as nodes and edges in the `gonum` library.
 
-In every other demo we use the implementation of nodes and edges in the `graph/simple` library. That library also contains the implementation of the undirected graph we will be using in all of our demos. `simple.UndirectedGraph` is an implementation of the interface `graph.Graph`.
+In every other demo we use the implementation of nodes and edges in the `graph/simple` library. That library also contains the implementation of the undirected graph we use in all of the demos. `simple.UndirectedGraph` implements the `graph.Graph` interface.
 
 ## Demo 2
 
-This demo shows how you can load some well known social networks. The graphs can be found in the projects root directory as `.txt` files. The format of these files is that in every line you can find one edge, given in the format `ID_Node1` `spacebar` `ID_Node2`. Using the implemented `LoadGraph` function found in `lab/graph.go` you can load any graph you want.
+This demo shows how you can load some well-known social networks. The graphs can be found in the project's root directory as `.txt` files. Each line contains one edge in the format `ID_Node1` `spacebar` `ID_Node2`. Using the implemented `LoadGraph` function found in `lab/graph.go`, you can load any graph you want.
 
-Every demo after this uses the functions declared for loading the graphs given in the root directory.
+Every demo after this uses the functions declared for loading the graphs in the root directory.
 
 ## Demo 3
 
-This demo presents the Degree Distibution of every node in the graph.
+This demo presents the degree distribution of every node in the graph.
 
-Degree of a node represents how many edges that node has.
+The degree of a node is the number of edges that node has.
 
 ## Demo 4
 
-This demo shows the Clustering Coefficient for each node in the graph. 
+This demo shows the clustering coefficient for each node in the graph.
 
-The Clustering Coefficient shows if the node is in a cluster. A value closer to 1 says that almost all of his neigbours have edges between them, but a value closer to 0 says that the node is not part of a cluster but more of a bridge between clusters.
+The clustering coefficient indicates whether a node is in a cluster. A value closer to 1 means that almost all of its neighbors have edges between them; a value closer to 0 means that the node is not part of a cluster but more of a bridge between clusters.
 
-The formula for the Clustering Coefficient for a node is the following:
+The formula for the clustering coefficient for a node is the following:
 
 ```
-CC = num_of_edges_between_his_neighbours / num_of_possible_edges_between_his_neighbours
+CC = num_of_edges_between_its_neighbors / num_of_possible_edges_between_its_neighbors
 ```
 
 ## Demo 5
 
-This demo shows how many Connected Components a graph has. First it showcases that on one of the graphs in the root directory, then on a generated Erdos-Renyi graph.
+This demo shows how many connected components a graph has. First it showcases this on one of the graphs in the root directory, then on a generated Erdos-Renyi graph.
 
-A Connected Component of graph is a subgraph so that you have a path between every pair of nodes.
-Erdos-Renyi graph generation is a technique to generate a random graph. You are given 2 parameters, the number of nodes and the probability for every edge to exist. Then using these two parameters you can generate the graph. You can see the implementation in `demo5/helper.go`
+A connected component of a graph is a subgraph in which there is a path between every pair of nodes.
+Erdos-Renyi graph generation is a technique to generate a random graph. You are given two parameters: the number of nodes and the probability for every edge to exist. Using these two parameters you can generate the graph. You can see the implementation in `demo5/helper.go`.
 
 ## Demo 6
 
-This demo shows the shortest distance between every node in the graph. Also shows the average shortedst distance between every node, and the diameter of the graph.
+This demo shows the shortest distance between every node in the graph. It also shows the average shortest distance between nodes and the diameter of the graph.
 
-It uses the function `path.DijkstraAllPaths` that returns the object `path.AllShortest`. You can call the method `Between` on that object so you get the information about the shortest path about that path.
+It uses the function `path.DijkstraAllPaths` that returns the object `path.AllShortest`. You can call the method `Between` on that object to get information about the shortest path between nodes.
 
 ## Demo 7
 
-This demo prints out the top 10 nodes for Betweeness Centrality, Closeness Centrality and Eigenvector centrality.
+This demo prints out the top 10 nodes for betweenness centrality, closeness centrality and eigenvector centrality.
 
-Betweeness centrality is how many times the node appears on the shortest paths.
-Closeness centrality represents how close the node is to the rest of the network.
+Betweenness centrality measures how many times a node appears on shortest paths.
+Closeness centrality represents how close a node is to the rest of the network.
 Eigenvector centrality represents how important a node is in a network.
 
 ## Demo 8
 
-This demo prints out the shell index for every node in the graph. It also prints out the sizes of the k-core subgraphs.
+This demo prints out the shell index for every node in the graph. It also prints the sizes of the k-core subgraphs.
 
 A k-core graph is a graph where all of the nodes have degree of at least k.
-Shell index of a node is k, where k is the highest k-core subgraph the node is in.
+The shell index of a node is k, where k is the highest k-core subgraph the node belongs to.
 
 ## Demo 9
 
-This demo shows algorithms for community detection. You can see Label Propagation, Greedy Modularity Optimization and the Louvain method.
+This demo shows algorithms for community detection. You can see label propagation, greedy modularity optimization and the Louvain method.
 
-Label propagation is an iterative method. In the start each node has its label, and after every iteration it gets the label that is most popular among his neigbours. This process is done until the labels stop changing.
-Greedy Modularity Optimization is also an iterative method. Modularity is the score for how good a certain choice of communities is. Every node starts as their own community, and each iteration two communities are joined if their joining is the best for the modularity. This process is done untill no improvements can be done.
-Louvain algorithm has 2 phases. The first phase is similar to GMO, but instead of merging communities it moves nodes between communities. The second phase makes a new graph where each community is a node and the edges between them represent the edges between communities. On that graph the first phase is then done.
+Label propagation is an iterative method. At the start, each node has its label, and after every iteration it takes the label that is most popular among its neighbors. This process continues until the labels stop changing.
+Greedy modularity optimization is also an iterative method. Modularity is a score for how good a particular choice of communities is. Every node starts in its own community, and in each iteration two communities are joined if doing so yields the best improvement in modularity. This process continues until no improvements can be made.
+The Louvain algorithm has two phases. The first phase is similar to greedy modularity optimization, but instead of merging communities it moves nodes between communities. The second phase makes a new graph where each community is a node and the edges between them represent edges between communities. On that graph the first phase is then applied.
 
 ## Demo 10
 
+This demo shows algorithms for link prediction. You can see the Adamic-Adar index and the Jaccard coefficient.
+
+The Jaccard coefficient uses the number of common neighbors to predict links.
+The Adamic-Adar index also uses the number of common neighbors to predict links, but each neighbor's weight is inversely proportional to the neighbor's degree.
