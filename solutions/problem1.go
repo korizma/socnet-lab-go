@@ -4,36 +4,14 @@ import (
 	"fmt"
 
 	"github.com/korizma/socnet-lab-go/demo2"
-	"github.com/korizma/socnet-lab-go/demo7"
-	"github.com/korizma/socnet-lab-go/demo8"
-	"gonum.org/v1/gonum/graph/network"
-	"gonum.org/v1/gonum/graph/path"
 	"gonum.org/v1/gonum/graph/simple"
-	"gonum.org/v1/gonum/graph/topo"
 )
 
 func CheckGraphIfNodeRemoved(g *simple.UndirectedGraph, node_id int64) {
-	conns := topo.ConnectedComponents(g)
 
-	if len(conns) != 1 {
-		fmt.Println("Graph is not fully connected!")
-		return
-	}
-
-	newG := demo8.CopyGraph(*g)
-
-	newG.RemoveNode(node_id)
-
-	conns = topo.ConnectedComponents(newG)
-
-	if len(conns) != 1 {
-		fmt.Println("Graph is not fully connected after removing node:", node_id)
-		fmt.Println("Number of components, after removing node:", len(conns))
-		return
-	}
-	fmt.Println("Graph is fully connected after removing node:", node_id)
 }
 
+// this function returns the key with the max value in the map
 func GetKeyWithMaxValue(m map[int64]float64) int64 {
 	max_id := int64(-1)
 
@@ -51,15 +29,9 @@ func GetKeyWithMaxValue(m map[int64]float64) int64 {
 	return max_id
 }
 
+// this function returns the top 1 node for BC, CC, EC
 func GetTopCentralityNodes(g *simple.UndirectedGraph) (int64, int64, int64) {
-
-	betweenness := network.Betweenness(g)
-
-	closeness := network.Closeness(g, path.DijkstraAllPaths(g))
-
-	eigenvector := demo7.EigenvectorCentrality(g)
-
-	return GetKeyWithMaxValue(betweenness), GetKeyWithMaxValue(closeness), GetKeyWithMaxValue(eigenvector)
+	return 0, 0, 0
 }
 
 func Sol1() {

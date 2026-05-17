@@ -56,7 +56,5 @@ func main() {
 		solutions.Sol4()
 	case "sol5":
 		solutions.Sol5()
-	case "sol6":
-		solutions.Sol6()
 	}
 }

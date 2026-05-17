@@ -11,30 +11,7 @@ import (
 )
 
 func IsCommunityStrong(G *simple.UndirectedGraph, community [][]graph.Node, indx int) bool {
-	strong := true
-
-	node_map := make(map[int64]bool)
-
-	for _, node := range community[indx] {
-		node_map[node.ID()] = true
-	}
-
-	for _, node := range community[indx] {
-		neighbours := graph.NodesOf(G.From(node.ID()))
-
-		good_neigbours := 0
-		for _, neighbour := range neighbours {
-			_, ok := node_map[neighbour.ID()]
-			if ok {
-				good_neigbours++
-			}
-		}
-		if good_neigbours < len(neighbours)/2 {
-			strong = false
-			break
-		}
-	}
-	return strong
+	return false
 }
 
 func Louvain(g graph.Undirected) {

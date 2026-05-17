@@ -4,25 +4,11 @@ import (
 	"fmt"
 
 	"github.com/korizma/socnet-lab-go/demo2"
-	"gonum.org/v1/gonum/graph"
-	"gonum.org/v1/gonum/graph/path"
 	"gonum.org/v1/gonum/graph/simple"
 )
 
 func CalculateDistanceDistribution(g *simple.UndirectedGraph) map[int]int {
-	paths := path.DijkstraAllPaths(g)
-
-	distance_distribution := make(map[int]int)
-
-	nodes := graph.NodesOf(g.Nodes())
-
-	for i := 0; i < len(nodes); i++ {
-		for j := i + 1; j < len(nodes); j++ {
-			_, dist, _ := paths.Between(nodes[i].ID(), nodes[j].ID())
-			distance_distribution[int(dist)]++
-		}
-	}
-	return distance_distribution
+	return map[int]int{}
 }
 
 func normalizeDistanceDistribution(dist_dist map[int]int) (map[int]float64, int) {

@@ -2,12 +2,10 @@ package solutions
 
 import (
 	"fmt"
-	"slices"
 
 	"github.com/korizma/socnet-lab-go/demo10"
 	"github.com/korizma/socnet-lab-go/demo2"
 	"gonum.org/v1/gonum/graph"
-	"gonum.org/v1/gonum/graph/community"
 )
 
 func cmp(a, b demo10.LinkPredictionScore) int {
@@ -15,26 +13,11 @@ func cmp(a, b demo10.LinkPredictionScore) int {
 }
 
 func getInterCommunityEdgePrediction(g graph.Graph) []demo10.LinkPredictionScore {
-	all_edge_predictions := demo10.AdamicAdarIndex(g)
-	comms := community.Modularize(g, 1, nil)
 
-	node_to_community := make(map[int64]int)
-	for i, comm := range comms.Communities() {
-		for _, node := range comm {
-			node_to_community[node.ID()] = i
-		}
-	}
+	// funkcija koja sortira slice LinkPredictionScore
+	// slices.SortFunc(intercom_edge_predictions, cmp)
 
-	intercom_edge_predictions := []demo10.LinkPredictionScore{}
-	for _, pred := range all_edge_predictions {
-		if node_to_community[pred.FromID] != node_to_community[pred.ToID] {
-			intercom_edge_predictions = append(intercom_edge_predictions, pred)
-		}
-	}
-
-	slices.SortFunc(intercom_edge_predictions, cmp)
-
-	return intercom_edge_predictions
+	return []demo10.LinkPredictionScore{}
 }
 
 func Sol5() {

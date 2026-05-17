@@ -1,7 +1,3 @@
-# Social Network Lab in Go
-
-There are 10 demos in total, and 6 problems you will need to solve.
-
 # Content of the Demos
 
 ## Demo 1
