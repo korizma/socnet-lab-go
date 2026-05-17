@@ -2,9 +2,7 @@
 
 ## Demo 1
 
-This demo shows how you can create an undirected graph with the `gonum` library. In the `helper.go` file for this demo you can see how `Osoba` and `Veza` were declared. They satisfy the interfaces for `graph.Node` and `graph.Edge` and can be used as nodes and edges in the `gonum` library.
-
-In every other demo we use the implementation of nodes and edges in the `graph/simple` library. That library also contains the implementation of the undirected graph we use in all of the demos. `simple.UndirectedGraph` implements the `graph.Graph` interface.
+This demo shows how you can create an undirected graph with the `gonum` library. 
 
 ## Demo 2
 

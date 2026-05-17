@@ -3,26 +3,27 @@ package demo1
 import (
 	"fmt"
 
+	"gonum.org/v1/gonum/graph"
 	"gonum.org/v1/gonum/graph/simple"
 )
 
 func create_simple_undirected_graph() *simple.UndirectedGraph {
 	G := simple.NewUndirectedGraph()
 
-	osobe := []Osoba{
-		{id: 0, ime: "Ana", pol: "Z"},
-		{id: 1, ime: "Milovan", pol: "M"},
-		{id: 2, ime: "Pera", pol: "M"},
-		{id: 3, ime: "Mika", pol: "M"},
-		{id: 4, ime: "Stojan", pol: "M"},
+	osobe := []simple.Node{
+		simple.Node(0),
+		simple.Node(1),
+		simple.Node(2),
+		simple.Node(3),
+		simple.Node(4),
 	}
 
-	veze := []Veza{
-		{ko: osobe[0], koga: osobe[1], kako: "voli"},
-		{ko: osobe[0], koga: osobe[2], kako: "ne-voli"},
-		{ko: osobe[0], koga: osobe[4], kako: "voli"},
-		{ko: osobe[2], koga: osobe[3], kako: "ne-voli"},
-		{ko: osobe[1], koga: osobe[4], kako: "ne-voli"},
+	veze := []simple.Edge{
+		simple.Edge{F: osobe[0], T: osobe[1]},
+		simple.Edge{F: osobe[0], T: osobe[2]},
+		simple.Edge{F: osobe[4], T: osobe[3]},
+		simple.Edge{F: osobe[2], T: osobe[4]},
+		simple.Edge{F: osobe[0], T: osobe[4]},
 	}
 
 	for _, osoba := range osobe {
@@ -42,44 +43,30 @@ func Demo1() {
 	fmt.Println("Osobe:")
 	fmt.Println()
 
-	osobe := G.Nodes()
+	osobe := graph.NodesOf(G.Nodes())
 
-	for osobe.Next() {
-		osoba := osobe.Node().(Osoba)
-		fmt.Println(osoba.ime, osoba.pol)
+	for _, osoba := range osobe {
+		fmt.Println("Osoba", osoba.ID())
 	}
 
 	fmt.Println("Veze:")
 	fmt.Println()
 
-	veze := G.Edges()
+	veze := graph.EdgesOf(G.Edges())
 
-	for veze.Next() {
-		veza := veze.Edge().(Veza)
-		fmt.Println(veza.ko.ime, veza.kako, veza.koga.ime)
+	for _, veza := range veze {
+		fmt.Println(veza.From().ID(), "->", veza.To().ID())
 	}
 
 	fmt.Println("\nSusedstva:")
 
-	osobe = G.Nodes()
+	for _, osoba := range osobe {
+		fmt.Println("Susedstva osobe", osoba.ID())
 
-	for osobe.Next() {
-		osoba := osobe.Node().(Osoba)
+		susedi := graph.NodesOf(G.From(osoba.ID()))
 
-		print("\n")
-		fmt.Println("Susedi osobe", osoba.ime)
-		print("\n")
-		veze = G.Edges()
-
-		for veze.Next() {
-			veza := veze.Edge().(Veza)
-
-			if veza.ko == osoba {
-				fmt.Println(veza.koga.ime, veza.kako)
-			}
-			if veza.koga == osoba {
-				fmt.Println(veza.ko.ime, veza.kako)
-			}
+		for _, sused := range susedi {
+			fmt.Println(sused.ID())
 		}
 	}
 }
